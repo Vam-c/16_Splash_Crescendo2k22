@@ -7,7 +7,7 @@
     <title><%= order_id %></title>
 </head>
 <body>
-    <button id="rzp-button1">Pay</button>
+    <button id="rzp-button1" hidden>Pay</button>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var options = {
@@ -30,6 +30,7 @@ document.getElementById('rzp-button1').onclick = function(e){
     rzp1.open();
     e.preventDefault();
 }
+document.getElementById('rzp-button1').click();
 </script>
 </body>
 </html>

@@ -32,7 +32,13 @@ const userSchema = new mongoose.Schema({
     password: String,
     fullName: String,
     email: String,
-    contact: Number
+    contact: Number,
+    donation: Number
+});
+
+const userSchemaForPassport = new mongoose.Schema({
+    username: String,
+    password: String
 });
 const straySchema = new mongoose.Schema({
     nickname: String,
@@ -44,21 +50,22 @@ const straySchema = new mongoose.Schema({
     description: String,
     username: String                            //For identifying who updated the details.
 });
-userSchema.plugin(passportLocalMongoose);
+userSchemaForPassport.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", userSchema);
+const Passportuser = mongoose.model("Passportuser", userSchemaForPassport);
 const Stray = mongoose.model("Stray", straySchema);
 
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(Passportuser.createStrategy());
+passport.serializeUser(Passportuser.serializeUser());
+passport.deserializeUser(Passportuser.deserializeUser());
 
 //register page.
 app.get("/register", function(req, res){
     res.render('signup');
 });
 app.post("/register", function(req, res){
-    User.register({username: req.body.username}, req.body.password, function(err, user){
+    Passportuser.register({username: req.body.username}, req.body.password, function(err, user){
         if (err){
             res.render("alert",{message: err, redirect: "/register"});
         } else {
@@ -82,7 +89,7 @@ app.get("/login", function(req, res){
     res.render("login");
 });
 app.post("/login", function(req, res){
-    const user = new User({
+    const user = new Passportuser({
         username: req.body.username,
         password: req.body.password
     });
@@ -155,6 +162,52 @@ app.post("/upload", function(req, res){
     }
 });
 
+app.get("/donate", function(req, res){
+    if(req.isAuthenticated()){
+        res.render("donate");
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+});
+
+app.post("/donate", function(req, res){
+    if(req.isAuthenticated()){
+        //identify user using req.user.username.
+        const amount = 100 * req.body.amount;
+        User.findOne({username: req.user.username}, function(err, foundUser){
+            if(err){
+            res.render("alert",{message: err, redirect: "/login"});
+            } else {
+                if(!foundUser.donation){
+                    foundUser.donation = Number(req.body.amount);
+                } else {
+                    console.log(req.body.amount +"AND"+foundUser.donation);
+                    foundUser.donation = Number(foundUser.donation) + Number(req.body.amount);
+                    console.log(foundUser.donation);
+                }
+                foundUser.save(function(err){
+                    if(err){
+                       res.render("alert",{message: err, redirect: "/login"});
+                    }
+                });
+            }
+        });
+        var options = {
+            amount: amount,  // amount in the smallest currency unit  req.body.amount (in paise)
+            currency: "INR",
+            receipt: "receiptid11"
+        };
+        instance.orders.create(options, function(err, order) {
+            //res.render the page where razorpay ejs is pasted
+            //res.render("razorpay",{amount: 2000});
+            res.render("razorpay", {order_id: JSON.stringify(order.id)});
+        });   
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+    
+});
+
 
 // app.get("/adopt", function(req, res){
 //     if(req.isAuthenticated()){
@@ -164,60 +217,6 @@ app.post("/upload", function(req, res){
 //     }
 // });
 
-app.get("/donate", function(req, res){
-    if(req.isAuthenticated()){
-        res.render("donate");
-    } else {
-        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
-    }
-    
-});
-//to donate an amount by user.
-app.get("/check", function(req, res){
-    const id = new Date();
-        var options = {
-            amount: 4500,  // amount in the smallest currency unit  req.body.amount (in paise)
-            currency: "INR",
-            receipt: "receiptid11"
-        };
-    instance.orders.create(options, function(err, order) {
-        //res.render the page where razorpay ejs is pasted
-        //res.render("razorpay",{amount: 2000});
-        res.render("razorpay",{order_id: JSON.stringify(order.id)});
-    });
-    // instance.paymentLink.create({
-    //     amount: 500,
-    //     currency: "INR",
-    //     accept_partial: false,
-       
-       
-    //     customer: {
-    //       name: "Gaurav Kumar",
-    //       email: "gaurav.kumar@example.com",
-    //       contact: 919999999999
-    //     },
-    //     notify: {
-    //       sms: true,
-    //       email: true
-    //     },
-    //     reminder_enable: true,
-    //     notes: {
-    //       policy_name: "Jeevan Bima"
-    //     },
-    //     callback_url: "/thankyou",    //a thankyou page after payment successfull.
-    //     callback_method: "get"
-    //   });
-});
-app.post("/donate", function(req, res){
-    if(req.isAuthenticated()){
-        //identify user using req.user.username.
-        
-        
-      
-        
-    }
-    
-});
 
 
 //logout.
@@ -229,7 +228,6 @@ app.get("/logout", function(req, res){
 app.get("/", function(req, res){
     res.redirect("/login");
 });
-
 
 
 app.listen(3000, function(){

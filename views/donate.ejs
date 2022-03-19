@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>donate</title>
+    <title>Pawsitive</title>
     <link rel="stylesheet" href="donation.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -18,20 +22,26 @@
                <br> You are not important because of how long you live,<br>
                 you are important because of how effective you live.</p>
 
-                <button class="cn"><a href="#">Check your reward points</a></button>
+                <button class="cn">Check your reward points</button>
 
                 <div class="form">
-                    <h2>Donate Amount- </h2>
-                    <button class="btnn"><a href="#">Rs 100</a></button>
-                    <button class="btnn"><a href="#">Rs 500</a></button>
-                    <button class="btnn"><a href="#">Rs 1000</a></button>
-                    <input type="email" name="email" placeholder="Enter Customised Amount">
+                    <script>
+                        function change(value){
+                        document.getElementById("inputval").value= value;
+                        }
+                        
+                     </script>
+                    <h2>Donate Amount</h2>
+                    <form action="/donate" method="post">
+                    <input class="btnn" onclick="change(100)"  value="Rs 100">
+                    <input class="btnn" onclick="change(500)" value="Rs 500">
+                    <input class="btnn" onclick="change(1000)" value="Rs 1000">
+                    <input type="number" id="inputval" name="amount" placeholder="Enter Amount">  
+                    <button class="cn" type="submit">Donate</button>
+                    </form>
 
-
-
-
-                </div>
-                    </div>
+                    <!-- <input type="number" name="a" id="a"><br>
+                    <button onclick="add(document.getElementById('a').value)">Add</button> -->  
                 </div>
         </div>
     </div>

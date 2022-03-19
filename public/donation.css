@@ -22,15 +22,15 @@
     float: left;
     height: 70px;
 }
-
 .logo{
     color: #330505;
-    font-size: 35px;
+    font-size: 5rem;
     font-family: Arial;
     padding-left: 20px;
     float: left;
-    padding-top: 10px;
-    margin-top: 5px
+    padding-top: 60px;
+    margin-top: 5px;
+    font-family: 'Cabin Sketch', cursive;
 }
 
 .menu{
@@ -137,24 +137,19 @@ ul li a:hover{
 }
 
 .content .cn{
-    width: 200px;
-    height: 50px;
+    padding: 20px 50px 20px ;
     background: #330505;
     border: none;
     margin-bottom: 10px;
-    margin-left: 20px;
+    margin-top: 10px;
     font-size: 18px;
     border-radius: 10px;
     cursor: pointer;
     transition: .4s ease;
-
-}
-
-.content .cn a{
-    text-decoration: none;
     color: #fff;
-    transition: .3s ease;
 }
+
+
 
 .cn:hover{
     background-color: #080808;
@@ -177,10 +172,10 @@ body{
     transform: translate(0%,-5%);
     border-radius: 10px;
     padding: 25px;
+    text-align: center;
 }
 
 .form h2{
-    width: 220px;
     font-family: sans-serif;
     text-align: center;
     color: #330505;
@@ -195,7 +190,7 @@ body{
     width: 240px;
     height: 35px;
     background: transparent;
-    border-bottom: 1px solid #330505;
+    border-bottom: 1px solid #ffffff;
     border-top: none;
     border-right: none;
     border-left: none;
@@ -216,6 +211,7 @@ body{
 }
 
 .btnn{
+    text-align: center;
     width: 240px;
     height: 40px;
     background: #b38160;
@@ -267,3 +263,27 @@ body{
 .icons ion-icon:hover{
     color: #330505;
 }
+
+.button-33 {
+    background-color: #c2fbd7;
+    border-radius: 100px;
+    box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+    color: green;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .button-33:hover {
+    box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+  }
