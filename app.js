@@ -6,6 +6,11 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const https = require("https");
+const Razorpay = require("razorpay");
+const instance = new Razorpay({
+    key_id: process.env.RAZOR_KEY,
+    key_secret: process.env.RAZOR_SECRET
+  });
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -26,11 +31,25 @@ const userSchema = new mongoose.Schema({
     username: String,
     password: String,
     fullName: String,
-    email: String
+    email: String,
+    contact: Number
+});
+
+
+const straySchema = new mongoose.Schema({
+    nickname: String,
+    species: String,
+    breed: String,
+    color: String,
+    gender: String,
+    age: Number,
+    description: String,
+    username: String                            //For identifying who updated the details.
 });
 userSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", userSchema);
+const Stray = mongoose.model("Stray", straySchema);
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
@@ -47,7 +66,14 @@ app.post("/register", function(req, res){
         } else {
             passport.authenticate("local",{ failureRedirect: '/register'})(req, res, function(){
                // Render page after user authentication with req.user.username.
-               res.render("alert",{message: "Successfully registered in", redirect: "/register"});
+               const newUser = new User({
+                username: req.body.username,
+                fullName: req.body.fullName,
+                email: req.body.email,
+                contact: req.body.contact
+               });
+               newUser.save();
+               res.redirect("/home");
             });
         }
     });
@@ -73,7 +99,7 @@ app.post("/login", function(req, res){
                     res.render("alert",{message: error, redirect: "/login"});
                 } else {
                     //Code after user is logged in to his account. access using req.user.username.
-                    res.render("alert",{message: "Successfully logged in", redirect: "/login"});  
+                    res.redirect("/home"); 
                 }      
             })(req, res, function(){
                //why is this required for the previous page to render.
@@ -81,6 +107,90 @@ app.post("/login", function(req, res){
         }     
     });
 });
+
+
+app.get("/home", function(req, res){
+    if(req.isAuthenticated()){
+        Stray.find({}, function(err, founditems){
+            if(err){
+                res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+            } else {
+                res.render("home",{strays: founditems});
+            }
+        });  
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+});
+app.post("/home", function(req, res){
+    if(req.isAuthenticated()){
+        //render the contact details of person who uploaded stray details.
+        res.render("alert",{message: "contact details of person who uploaded.", redirect: "/login"});
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+});
+
+// app.get("/adopt", function(req, res){
+//     if(req.isAuthenticated()){
+//         res.render("adopt");
+//     } else {
+//         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+//     }
+// });
+
+// app.get("/donate", function(req, res){
+//     if(req.isAuthenticated()){
+//         res.render("donate");
+//     } else {
+//         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+//     }
+    
+// });
+//to donate an amount by user.
+
+// app.post("/donate", function(req, res){
+//     if(req.isAuthenticated()){
+//         //identify user using req.user.username.
+//         const id = new Date();
+//         var options = {
+//             amount: 20000,  // amount in the smallest currency unit  req.body.amount (in paise)
+//             currency: "INR",
+//             receipt: JSON.stringify(id)
+//         };
+        
+//         instance.orders.create(options, function(err, order) {
+//             //res.render the page where razorpay ejs is pasted
+//             //res.render("razorpay",{amount: 2000});
+
+//         });
+//         instance.paymentLink.create({
+//             amount: 500,
+//             currency: "INR",
+//             accept_partial: false,
+           
+           
+//             customer: {
+//               name: "Gaurav Kumar",
+//               email: "gaurav.kumar@example.com",
+//               contact: 919999999999
+//             },
+//             notify: {
+//               sms: true,
+//               email: true
+//             },
+//             reminder_enable: true,
+//             notes: {
+//               policy_name: "Jeevan Bima"
+//             },
+//             callback_url: "/thankyou",    //a thankyou page after payment successfull.
+//             callback_method: "get"
+//           });
+//     }
+    
+// });
+
+
 //logout.
 app.get("/logout", function(req, res){
     req.logout();
