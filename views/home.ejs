@@ -40,6 +40,9 @@
               <a class="nav-link" href="#testimonials">Adopt</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="/upload">Stray?</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="#cta">Donate</a>
             </li>
             <li class="nav-item">
@@ -109,7 +112,6 @@
         <br>
         <strong>
           <p>Species : Dog</p>
-          <p>Breed : Indian</p>
           <p>Colour : White and light brown</p>
           <p>Gender : Female</p>
           <p>Approx age in years : 1</p>
@@ -117,7 +119,7 @@
          <br>
           <br>
         <h3 class="stray-desc">Melita has met with an accident that has left her severely injured fracturing her leg. Wish her a speedy recovery.</h3>
-        <button type="button" class="btn btn-dark btn-lg dbutton"> Adopt</button>
+        <button type="button" class="btn btn-dark btn-lg dbutton">Adopt</button>
 
       </div>
     <% strays.forEach(function(stray){ %>
@@ -127,10 +129,9 @@
         <br>
         <strong>
           <p>Species : <%= stray.species %></p>
-          <p>Breed : <%= stray.breed %></p>
           <p>Colour : <%= stray.color %></p>
           <p>Gender : <%= stray.gender %></p>
-          <p>Approx age in years :<%= stray.age %></p>
+          <p>Approx age in years : <%= stray.age %></p>
         </strong>
          <br>
          <br>

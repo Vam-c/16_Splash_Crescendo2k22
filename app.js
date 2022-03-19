@@ -34,14 +34,12 @@ const userSchema = new mongoose.Schema({
     email: String,
     contact: Number
 });
-
-
 const straySchema = new mongoose.Schema({
     nickname: String,
     species: String,
-    breed: String,
     color: String,
     gender: String,
+    address: String,
     age: Number,
     description: String,
     username: String                            //For identifying who updated the details.
@@ -113,7 +111,7 @@ app.get("/home", function(req, res){
     if(req.isAuthenticated()){
         Stray.find({}, function(err, founditems){
             if(err){
-                res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+                res.render("alert",{message: err, redirect: "/login"});
             } else {
                 res.render("home",{strays: founditems});
             }
@@ -131,6 +129,33 @@ app.post("/home", function(req, res){
     }
 });
 
+app.get("/upload", function(req, res){
+    if(req.isAuthenticated()){
+        res.render("upload");
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+});
+app.post("/upload", function(req, res){
+    if(req.isAuthenticated()){
+        const newStray = new Stray({
+            nickname: req.body.nickname,
+            species: req.body.species,
+            color: req.body.color,
+            gender: req.body.gender,
+            address: req.body.address,
+            age: req.body.age,
+            description: req.body.description,
+            username: req.user.username
+        });
+        newStray.save();
+        res.redirect("/home");
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
+});
+
+
 // app.get("/adopt", function(req, res){
 //     if(req.isAuthenticated()){
 //         res.render("adopt");
@@ -139,56 +164,60 @@ app.post("/home", function(req, res){
 //     }
 // });
 
-// app.get("/donate", function(req, res){
-//     if(req.isAuthenticated()){
-//         res.render("donate");
-//     } else {
-//         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
-//     }
+app.get("/donate", function(req, res){
+    if(req.isAuthenticated()){
+        res.render("donate");
+    } else {
+        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
+    }
     
-// });
+});
 //to donate an amount by user.
-
-// app.post("/donate", function(req, res){
-//     if(req.isAuthenticated()){
-//         //identify user using req.user.username.
-//         const id = new Date();
-//         var options = {
-//             amount: 20000,  // amount in the smallest currency unit  req.body.amount (in paise)
-//             currency: "INR",
-//             receipt: JSON.stringify(id)
-//         };
+app.get("/check", function(req, res){
+    const id = new Date();
+        var options = {
+            amount: 4500,  // amount in the smallest currency unit  req.body.amount (in paise)
+            currency: "INR",
+            receipt: "receiptid11"
+        };
+    instance.orders.create(options, function(err, order) {
+        //res.render the page where razorpay ejs is pasted
+        //res.render("razorpay",{amount: 2000});
+        res.render("razorpay",{order_id: JSON.stringify(order.id)});
+    });
+    // instance.paymentLink.create({
+    //     amount: 500,
+    //     currency: "INR",
+    //     accept_partial: false,
+       
+       
+    //     customer: {
+    //       name: "Gaurav Kumar",
+    //       email: "gaurav.kumar@example.com",
+    //       contact: 919999999999
+    //     },
+    //     notify: {
+    //       sms: true,
+    //       email: true
+    //     },
+    //     reminder_enable: true,
+    //     notes: {
+    //       policy_name: "Jeevan Bima"
+    //     },
+    //     callback_url: "/thankyou",    //a thankyou page after payment successfull.
+    //     callback_method: "get"
+    //   });
+});
+app.post("/donate", function(req, res){
+    if(req.isAuthenticated()){
+        //identify user using req.user.username.
         
-//         instance.orders.create(options, function(err, order) {
-//             //res.render the page where razorpay ejs is pasted
-//             //res.render("razorpay",{amount: 2000});
-
-//         });
-//         instance.paymentLink.create({
-//             amount: 500,
-//             currency: "INR",
-//             accept_partial: false,
-           
-           
-//             customer: {
-//               name: "Gaurav Kumar",
-//               email: "gaurav.kumar@example.com",
-//               contact: 919999999999
-//             },
-//             notify: {
-//               sms: true,
-//               email: true
-//             },
-//             reminder_enable: true,
-//             notes: {
-//               policy_name: "Jeevan Bima"
-//             },
-//             callback_url: "/thankyou",    //a thankyou page after payment successfull.
-//             callback_method: "get"
-//           });
-//     }
+        
+      
+        
+    }
     
-// });
+});
 
 
 //logout.
