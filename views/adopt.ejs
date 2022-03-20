@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>donate</title>
+    <link rel="stylesheet" href="adopt.css">
+</head>
+<body>
+
+    <div class="main">
+        <div class="navbar">
+            <div class="icon">
+                <h2 class="logo">Pawsitive</h2>
+            </div>
+        </div>
+        <div class="content">
+
+
+                <div class="form one">
+                    <h2><%= stray.nickname %></h2>
+                  <p class="link"><%= stray.species %><br>
+                    <p class="link"><%= stray.color %><br>
+                      <p class="link"><%= stray.gender %><br>
+                    <p class="link"><%= stray.age %><br>
+                      <p class="link"><%= stray.description %><br>
+
+                </div>
+
+                <div class="form two">
+                    <h2>Owner Details</h2>
+                    <p class="link"><%= user.fullName %><br>
+                    <p class="link"><%= user.contact %><br>
+                    <p class="link"><%= user.email %><br>
+                    <p class="link"><%= stray.address %><br>
+                </div>
+                    </div>
+
+               <img class= "dog-img" src="adopt_dog.jpg" alt="adopt dog pic">
+        </div>
+              <button class="confirm"><a href="#">Confirm</a></button>
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+</body>
+</html>

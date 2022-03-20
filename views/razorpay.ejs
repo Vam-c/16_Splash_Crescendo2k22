@@ -12,7 +12,7 @@
 <script>
 var options = {
     "key": "rzp_test_f4NMZLDlu2wxDS", // Enter the Key ID generated from the Dashboard
-    "amount": "1000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "amount": <%=amount%>, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     "currency": "INR",
     "name": "Acme Corp",
     "description": "Test Transaction",
@@ -26,6 +26,16 @@ var options = {
     }
 };
 var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+        window.location.replace("/home");
+});
 document.getElementById('rzp-button1').onclick = function(e){
     rzp1.open();
     e.preventDefault();

@@ -118,8 +118,9 @@ app.get("/home", function(req, res){
     if(req.isAuthenticated()){
         Stray.find({}, function(err, founditems){
             if(err){
-                res.render("alert",{message: err, redirect: "/login"});
+                res.render("alert",{message: err, redirect: "/home"});
             } else {
+               // console.log(founditems);
                 res.render("home",{strays: founditems});
             }
         });  
@@ -127,14 +128,9 @@ app.get("/home", function(req, res){
         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
     }
 });
-app.post("/home", function(req, res){
-    if(req.isAuthenticated()){
-        //render the contact details of person who uploaded stray details.
-        res.render("alert",{message: "contact details of person who uploaded.", redirect: "/login"});
-    } else {
-        res.render("alert",{message: "User not authenticated.", redirect: "/login"});
-    }
-});
+//for adopting page.
+
+
 
 app.get("/upload", function(req, res){
     if(req.isAuthenticated()){
@@ -181,13 +177,13 @@ app.post("/donate", function(req, res){
                 if(!foundUser.donation){
                     foundUser.donation = Number(req.body.amount);
                 } else {
-                    console.log(req.body.amount +"AND"+foundUser.donation);
+                   // console.log(req.body.amount +"AND"+foundUser.donation);
                     foundUser.donation = Number(foundUser.donation) + Number(req.body.amount);
-                    console.log(foundUser.donation);
+                   // console.log(foundUser.donation);
                 }
                 foundUser.save(function(err){
                     if(err){
-                       res.render("alert",{message: err, redirect: "/login"});
+                       res.render("alert",{message: err, redirect: "/donate"});
                     }
                 });
             }
@@ -200,7 +196,7 @@ app.post("/donate", function(req, res){
         instance.orders.create(options, function(err, order) {
             //res.render the page where razorpay ejs is pasted
             //res.render("razorpay",{amount: 2000});
-            res.render("razorpay", {order_id: JSON.stringify(order.id)});
+            res.render("razorpay", {order_id: JSON.stringify(order.id), amount: JSON.stringify(amount)});
         });   
     } else {
         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
@@ -208,15 +204,26 @@ app.post("/donate", function(req, res){
     
 });
 
-
-// app.get("/adopt", function(req, res){
-//     if(req.isAuthenticated()){
-//         res.render("adopt");
-//     } else {
-//         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
-//     }
-// });
-
+app.post("/adopt", function(req, res){
+    if(req.isAuthenticated()){  
+        Stray.findById(req.body.adopt, function(err, foundItem){
+            if(err){
+                res.render("alert",{message: err, redirect: "/home"});
+            } else {
+                User.findOne({username: foundItem.username}, function(err, foundUser){
+                    if(err){
+                          res.render("alert",{message: err, redirect: "/home"});
+                    } else {
+                       // console.log("the details: " + foundItem, foundUser);
+                        res.render("adopt", {stray: foundItem, user: foundUser});
+                    }
+                });
+            }
+        });
+    } else {
+        res.render("alert", {message: "User not authenticated.", redirect: "/login"});
+    }
+});
 
 
 //logout.

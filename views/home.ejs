@@ -139,8 +139,9 @@
          <br>
          <br>
         <h3 class="stray-desc"><%= stray.description %></h3>
-        <form action="/home" method="post"></form>
-        <button type="submit" name="adopt" value="<%= stray._id %>" class="btn btn-dark btn-lg dbutton">Adopt</button>
+        <form action="/adopt" method="post">
+          <input type="hidden" name="adopt" value="<%= stray._id %>">
+        <button type="submit" class="btn btn-dark btn-lg dbutton">Adopt</button>
       </form>
       </div>
    
