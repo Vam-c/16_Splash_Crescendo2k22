@@ -201,8 +201,24 @@ app.post("/donate", function(req, res){
     } else {
         res.render("alert",{message: "User not authenticated.", redirect: "/login"});
     }
-    
 });
+app.post("/api/payment/verify",(req,res)=>{
+    let data = req.body;
+    console.log(data);
+    let body=data.razorpay_order_id + "|" + data.razorpay_payment_id;
+   
+     var crypto = require("crypto");
+     var expectedSignature = crypto.createHmac('sha256', process.env.RAZOR_SECRET)
+                                     .update(body.toString())
+                                     .digest('hex');
+                                     console.log("sig received " , data.razorpay_signature);
+                                     console.log("sig generated " , expectedSignature);
+     var response = {"signatureIsValid":"false"}
+     if(expectedSignature === data.razorpay_signature)
+      response={"signatureIsValid":"true"}
+         console.log(response);
+         res.send(response);
+     });
 
 app.post("/adopt", function(req, res){
     if(req.isAuthenticated()){  
