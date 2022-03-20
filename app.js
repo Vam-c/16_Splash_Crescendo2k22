@@ -225,6 +225,13 @@ app.post("/adopt", function(req, res){
     }
 });
 
+app.get("/thankyou", function(req, res){
+    if(req.isAuthenticated()){
+        res.render("thankyou", {user: req.user.username});
+    } else {
+        res.render("alert", {message: "User not authenticated.", redirect: "/login"});
+    }
+});
 
 //logout.
 app.get("/logout", function(req, res){
